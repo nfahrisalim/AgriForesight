@@ -4,6 +4,7 @@ import { StatsSection } from "@/components/StatsSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
 import { StaticDashboardSection } from "@/components/StaticDashboardSection";
 import { HowItWorksSection } from "@/components/HowItWorksSection";
+import { FoodSecuritySection } from "@/components/FoodSecuritySection";
 import { Footer } from "@/components/Footer";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 
@@ -14,8 +15,9 @@ export function Home() {
       <HeroSection />
       <StatsSection />
       <FeaturesSection />
-      <StaticDashboardSection />
       <HowItWorksSection />
+      <FoodSecuritySection />
+      <StaticDashboardSection />
       <Footer />
       <FloatingActionButton />
     </div>
