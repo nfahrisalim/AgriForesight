@@ -13,20 +13,29 @@ export function FoodSecuritySection() {
                 label: 'Harga Rata-rata Nasional (Rp/kg)',
                 data: [12500, 12800, 13200, 13500, 13800, 14200, 14500, 14800, 15100, 15400, 15200, 14900],
                 borderColor: 'rgb(34, 197, 94)',
-                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                backgroundColor: 'rgba(34, 197, 94, 0.15)',
                 fill: true,
                 tension: 0.4,
                 pointBackgroundColor: 'rgb(34, 197, 94)',
                 pointBorderColor: 'white',
                 pointBorderWidth: 2,
-                pointRadius: 6,
+                pointRadius: 4,
                 pointHoverRadius: 8,
+                pointHoverBorderWidth: 3,
             }
         ]
     };
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+            intersect: false,
+            mode: 'index',
+        },
+        animation: {
+            duration: 2000,
+            easing: 'easeInOutQuart',
+        },
         plugins: {
             legend: {
                 display: false
@@ -52,7 +61,10 @@ export function FoodSecuritySection() {
                     display: false
                 },
                 ticks: {
-                    color: 'rgb(107, 114, 128)'
+                    color: 'rgb(107, 114, 128)',
+                    font: {
+                        size: 12
+                    }
                 }
             },
             y: {
@@ -61,10 +73,22 @@ export function FoodSecuritySection() {
                 },
                 ticks: {
                     color: 'rgb(107, 114, 128)',
+                    font: {
+                        size: 12
+                    },
                     callback: function (value) {
-                        return `Rp ${value.toLocaleString('id-ID')}`;
+                        return `Rp ${(value / 1000).toFixed(0)}k`;
                     }
                 }
+            }
+        },
+        elements: {
+            point: {
+                hoverRadius: 8,
+                hoverBorderWidth: 3
+            },
+            line: {
+                borderWidth: 3
             }
         }
     };
@@ -86,5 +110,5 @@ export function FoodSecuritySection() {
             text: "Konsumen dapat merencanakan anggaran belanja dengan lebih baik"
         }
     ];
-    return (_jsx("section", { className: "py-20 bg-gray-50 dark:bg-gray-800 transition-colors duration-300", children: _jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: [_jsxs("div", { className: "text-center mb-16", children: [_jsx("h2", { className: "text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4", children: "Mendukung Ketahanan Pangan Nasional" }), _jsx("p", { className: "text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto", children: "Prediksi harga yang akurat membantu semua pihak dalam rantai pasok beras, dari petani hingga konsumen, untuk mengambil keputusan yang tepat dan mendukung ketahanan pangan nasional." })] }), _jsxs("div", { className: "grid lg:grid-cols-2 gap-12 items-center", children: [_jsxs("div", { className: "space-y-8", children: [_jsx("h3", { className: "text-2xl font-bold text-gray-900 dark:text-white mb-6", children: "Manfaat Prediksi Harga Beras" }), _jsx("div", { className: "space-y-6", children: benefits.map((benefit, index) => (_jsxs("div", { className: "flex items-start space-x-4", children: [_jsx("div", { className: "flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-600 to-yellow-500 rounded-xl flex items-center justify-center text-white", children: benefit.icon }), _jsx("div", { children: _jsx("p", { className: "text-gray-600 dark:text-gray-300 leading-relaxed pt-2", children: benefit.text }) })] }, index))) })] }), _jsxs("div", { className: "bg-white dark:bg-gray-700 rounded-2xl shadow-xl p-6 transition-colors duration-300", children: [_jsxs("h4", { className: "text-xl font-bold text-gray-900 dark:text-white mb-6 text-center flex items-center justify-center gap-2", children: [_jsx(TrendingUp, { className: "w-5 h-5 text-green-600" }), "Tren Harga Beras Nasional"] }), _jsx("div", { className: "h-64 w-full", children: _jsx(Line, { data: nationalTrendData, options: chartOptions }) }), _jsxs("div", { className: "mt-4 flex items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400", children: [_jsx("div", { className: "w-3 h-3 rounded-full bg-green-500" }), _jsx("span", { children: "Harga rata-rata per kilogram" })] })] })] }), _jsx("div", { className: "mt-16 text-center", children: _jsxs("div", { className: "inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-yellow-500 rounded-full text-white font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105", children: [_jsx(Shield, { className: "w-4 h-4" }), _jsx("span", { children: "Bersama membangun ketahanan pangan Indonesia" })] }) })] }) }));
+    return (_jsx("section", { className: "py-20 bg-gray-50 dark:bg-gray-800 transition-colors duration-300", children: _jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: [_jsxs("div", { className: "text-center mb-16", children: [_jsx("h2", { className: "text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4", children: "Mendukung Ketahanan Pangan Nasional" }), _jsx("p", { className: "text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto", children: "Prediksi harga yang akurat membantu semua pihak dalam rantai pasok beras, dari petani hingga konsumen, untuk mengambil keputusan yang tepat dan mendukung ketahanan pangan nasional." })] }), _jsxs("div", { className: "grid lg:grid-cols-2 gap-12 items-center", children: [_jsxs("div", { className: "space-y-8", children: [_jsx("h3", { className: "text-2xl font-bold text-gray-900 dark:text-white mb-6", children: "Manfaat Prediksi Harga Beras" }), _jsx("div", { className: "space-y-6", children: benefits.map((benefit, index) => (_jsxs("div", { className: "flex items-start space-x-4", children: [_jsx("div", { className: "flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-600 to-yellow-500 rounded-xl flex items-center justify-center text-white", children: benefit.icon }), _jsx("div", { children: _jsx("p", { className: "text-gray-600 dark:text-gray-300 leading-relaxed pt-2", children: benefit.text }) })] }, index))) })] }), _jsxs("div", { className: "bg-white dark:bg-gray-700 rounded-2xl shadow-xl p-4 sm:p-6 transition-colors duration-300 hover:shadow-2xl", children: [_jsxs("h4", { className: "text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-center flex items-center justify-center gap-2", children: [_jsx(TrendingUp, { className: "w-4 h-4 sm:w-5 sm:h-5 text-green-600" }), "Tren Harga Beras Nasional"] }), _jsx("div", { className: "relative w-full", children: _jsx("div", { className: "h-48 sm:h-64 md:h-72 w-full", children: _jsx(Line, { data: nationalTrendData, options: chartOptions }) }) }), _jsxs("div", { className: "mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400", children: [_jsx("div", { className: "w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500 animate-pulse" }), _jsx("span", { children: "Harga rata-rata per kilogram" })] })] })] }), _jsx("div", { className: "mt-16 text-center", children: _jsxs("div", { className: "inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-yellow-500 rounded-full text-white font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105", children: [_jsx(Shield, { className: "w-4 h-4" }), _jsx("span", { children: "Bersama membangun ketahanan pangan Indonesia" })] }) })] }) }));
 }

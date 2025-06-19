@@ -33,14 +33,15 @@ export function FoodSecuritySection() {
         label: 'Harga Rata-rata Nasional (Rp/kg)',
         data: [12500, 12800, 13200, 13500, 13800, 14200, 14500, 14800, 15100, 15400, 15200, 14900],
         borderColor: 'rgb(34, 197, 94)',
-        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        backgroundColor: 'rgba(34, 197, 94, 0.15)',
         fill: true,
         tension: 0.4,
         pointBackgroundColor: 'rgb(34, 197, 94)',
         pointBorderColor: 'white',
         pointBorderWidth: 2,
-        pointRadius: 6,
+        pointRadius: 4,
         pointHoverRadius: 8,
+        pointHoverBorderWidth: 3,
       }
     ]
   }
@@ -48,6 +49,14 @@ export function FoodSecuritySection() {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      intersect: false,
+      mode: 'index' as const,
+    },
+    animation: {
+      duration: 2000,
+      easing: 'easeInOutQuart' as const,
+    },
     plugins: {
       legend: {
         display: false
@@ -73,7 +82,10 @@ export function FoodSecuritySection() {
           display: false
         },
         ticks: {
-          color: 'rgb(107, 114, 128)'
+          color: 'rgb(107, 114, 128)',
+          font: {
+            size: 12
+          }
         }
       },
       y: {
@@ -82,10 +94,22 @@ export function FoodSecuritySection() {
         },
         ticks: {
           color: 'rgb(107, 114, 128)',
+          font: {
+            size: 12
+          },
           callback: function(value: any) {
-            return `Rp ${value.toLocaleString('id-ID')}`
+            return `Rp ${(value / 1000).toFixed(0)}k`
           }
         }
+      }
+    },
+    elements: {
+      point: {
+        hoverRadius: 8,
+        hoverBorderWidth: 3
+      },
+      line: {
+        borderWidth: 3
       }
     }
   }
@@ -150,16 +174,18 @@ export function FoodSecuritySection() {
           </div>
 
           {/* Rice Price Trend Chart */}
-          <div className="bg-white dark:bg-gray-700 rounded-2xl shadow-xl p-6 transition-colors duration-300">
-            <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-6 text-center flex items-center justify-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+          <div className="bg-white dark:bg-gray-700 rounded-2xl shadow-xl p-4 sm:p-6 transition-colors duration-300 hover:shadow-2xl">
+            <h4 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-center flex items-center justify-center gap-2">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
               Tren Harga Beras Nasional
             </h4>
-            <div className="h-64 w-full">
-              <Line data={nationalTrendData} options={chartOptions} />
+            <div className="relative w-full">
+              <div className="h-48 sm:h-64 md:h-72 w-full">
+                <Line data={nationalTrendData} options={chartOptions} />
+              </div>
             </div>
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500 animate-pulse"></div>
               <span>Harga rata-rata per kilogram</span>
             </div>
           </div>
