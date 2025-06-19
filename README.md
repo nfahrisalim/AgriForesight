@@ -39,7 +39,6 @@
 
    ```bash
    npm install
-````
 
 2. Start the development server:
 
@@ -94,9 +93,5 @@ The final static site will be output to the `dist/` folder.
 * **Lucide React** – Beautiful open-source icons
 
 ---
-
 > Made with 💡 and 🌾 for a smarter agricultural future.
-
-```
-
 ---
