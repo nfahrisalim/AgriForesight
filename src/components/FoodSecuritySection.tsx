@@ -121,7 +121,7 @@ export function FoodSecuritySection() {
   ];
 
   return (
-    <section className="py-20 bg-[#4CAF50] dark:bg-[#29792D] transition-colors duration-300 text-white">
+    <section className="py-20 bg-[#4CAF50] dark:bg-[#1B1B1B] transition-colors duration-300 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -168,7 +168,7 @@ export function FoodSecuritySection() {
 
         {/* Call to Action */}
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 dark:bg-white rounded-full text-white dark:text-[#2E7D32] font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 rounded-full text-white font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <Shield className="w-4 h-4" />
             <span>Bersama membangun ketahanan pangan Indonesia</span>
             </div>

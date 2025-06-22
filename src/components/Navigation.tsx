@@ -22,7 +22,7 @@ export function Navigation() {
   };
 
   return (
-    <nav className="fixed top-0 w-full bg-[#F9FAF4]/90 dark:bg-[#29792D]/90 backdrop-blur-lg z-50 border-b border-gray-200 dark:border-green-700/50 transition-colors duration-300 shadow-sm">
+    <nav className="fixed top-0 w-full bg-[#F9FAF4]/90 dark:bg-[#1B1B1B]/90 backdrop-blur-lg z-50 border-b border-gray-200 dark:border-[#1B1B1B]/50 transition-colors duration-300 shadow-sm">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center space-x-4 group cursor-pointer" onClick={() => scrollToSection('home')}>
