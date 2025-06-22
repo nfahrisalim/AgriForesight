@@ -113,78 +113,53 @@ export function FoodSecuritySection() {
       }
     }
   }
-
   const benefits = [
-    {
-      icon: <Users className="w-5 h-5" />,
-      text: "Petani dapat menentukan waktu terbaik untuk menjual hasil panen"
-    },
-    {
-      icon: <TrendingUp className="w-5 h-5" />,
-      text: "Distributor dapat mengoptimalkan manajemen stok dan rantai pasok"
-    },
-    {
-      icon: <Shield className="w-5 h-5" />,
-      text: "Pemerintah dapat mengantisipasi fluktuasi harga untuk kebijakan stabilisasi"
-    },
-    {
-      icon: <Target className="w-5 h-5" />,
-      text: "Konsumen dapat merencanakan anggaran belanja dengan lebih baik"
-    }
-  ]
+    { icon: <Users className="w-6 h-6" />, text: "Petani dapat menentukan waktu terbaik untuk menjual hasil panen." },
+    { icon: <TrendingUp className="w-6 h-6" />, text: "Distributor dapat mengoptimalkan manajemen stok dan rantai pasok." },
+    { icon: <Shield className="w-6 h-6" />, text: "Pemerintah dapat mengantisipasi fluktuasi harga untuk kebijakan stabilisasi." },
+    { icon: <Target className="w-6 h-6" />, text: "Konsumen dapat merencanakan anggaran belanja dengan lebih baik." }
+  ];
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+    <section className="py-20 bg-[#4CAF50] dark:bg-[#29792D] transition-colors duration-300 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Mendukung Ketahanan Pangan Nasional
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Prediksi harga yang akurat membantu semua pihak dalam rantai pasok beras, dari petani hingga konsumen, 
-            untuk mengambil keputusan yang tepat dan mendukung ketahanan pangan nasional.
+          <div className="mt-4 w-24 h-1 bg-[#F9A825] mx-auto rounded-full"></div>
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+            Prediksi harga yang akurat membantu semua pihak dalam rantai pasok beras untuk mengambil keputusan yang tepat.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Benefits List */}
           <div className="space-y-8">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-              Manfaat Prediksi Harga Beras
-            </h3>
-            
+            <h3 className="text-3xl font-bold mb-6">Manfaat Prediksi Harga Beras</h3>
             <div className="space-y-6">
               {benefits.map((benefit, index) => (
-                <div 
-                  key={index}
-                  className="flex items-start space-x-4"
-                >
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-600 to-yellow-500 rounded-xl flex items-center justify-center text-white">
+                <div key={index} className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-white/20 dark:bg-white rounded-xl flex items-center justify-center text-white dark:text-[#4CAF50] transition-colors duration-300">
                     {benefit.icon}
                   </div>
                   <div>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed pt-2">
-                      {benefit.text}
-                    </p>
+                    <p className="text-gray-100 leading-relaxed pt-3">{benefit.text}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Rice Price Trend Chart */}
-          <div className="bg-white dark:bg-gray-700 rounded-2xl shadow-xl p-4 sm:p-6 transition-colors duration-300 hover:shadow-2xl">
-            <h4 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-center flex items-center justify-center gap-2">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+          <div className="bg-white/95 dark:bg-white rounded-2xl shadow-xl p-4 sm:p-6 transition-colors duration-300 hover:shadow-2xl">
+            <h4 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-900 mb-6 text-center flex items-center justify-center gap-2">
+              <TrendingUp className="w-5 h-5 text-[#4CAF50]" />
               Tren Harga Beras Nasional
             </h4>
-            <div className="relative w-full">
+            <div className="relative h-72 w-full">
               <div className="h-48 sm:h-64 md:h-72 w-full">
                 <Line data={nationalTrendData} options={chartOptions} />
               </div>
             </div>
-            <div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            <div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-600">
               <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500 animate-pulse"></div>
               <span>Harga rata-rata per kilogram</span>
             </div>
@@ -193,12 +168,12 @@ export function FoodSecuritySection() {
 
         {/* Call to Action */}
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-yellow-500 rounded-full text-white font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 dark:bg-white rounded-full text-white dark:text-[#2E7D32] font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
             <Shield className="w-4 h-4" />
             <span>Bersama membangun ketahanan pangan Indonesia</span>
+            </div>
           </div>
         </div>
-      </div>
     </section>
-  )
+  );
 }
