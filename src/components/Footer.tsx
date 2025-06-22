@@ -2,41 +2,23 @@ import { Leaf, Twitter, Linkedin, Github, ChevronRight } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 dark:bg-black text-white py-16 transition-colors duration-300">
+    <footer className="bg-[#2E7D32] dark:bg-[#112D12] text-white py-16 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-yellow-500 rounded-xl flex items-center justify-center">
-                <Leaf className="text-white text-xl" />
+              <div className="w-12 h-12 bg-white/20 dark:bg-white rounded-xl flex items-center justify-center transition-colors duration-300">
+                <Leaf className="text-white dark:text-[#4CAF50] text-xl transition-colors duration-300" />
               </div>
               <span className="text-2xl font-bold">AgriForesight</span>
             </div>
-            <p className="text-gray-300 text-lg leading-relaxed mb-6">
-              Kami berkomitmen untuk menyediakan data dan prediksi harga beras yang akurat untuk mendukung ketahanan pangan nasional dan membantu semua pihak dalam rantai pasok beras.
+            <p className="text-gray-200 text-lg leading-relaxed mb-6">
+              Kami berkomitmen untuk menyediakan data dan prediksi harga beras yang akurat untuk mendukung ketahanan pangan nasional.
             </p>
             <div className="flex space-x-4">
-              <a 
-                href="#" 
-                className="w-10 h-10 bg-gray-800 hover:bg-green-600 rounded-lg flex items-center justify-center transition-colors duration-200"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 bg-gray-800 hover:bg-green-600 rounded-lg flex items-center justify-center transition-colors duration-200"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 bg-gray-800 hover:bg-green-600 rounded-lg flex items-center justify-center transition-colors duration-200"
-                aria-label="GitHub"
-              >
-                <Github className="h-5 w-5" />
-              </a>
+              <a href="#" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors duration-200" aria-label="Twitter"><Twitter className="h-5 w-5" /></a>
+              <a href="#" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors duration-200" aria-label="LinkedIn"><Linkedin className="h-5 w-5" /></a>
+              <a href="#" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors duration-200" aria-label="GitHub"><Github className="h-5 w-5" /></a>
             </div>
           </div>
           
@@ -89,10 +71,8 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-gray-400">
-            © 2025 AgriForesight. Built with React + TypeScript + Vite. All rights reserved.
-          </p>
+        <div className="border-t border-white/20 mt-12 pt-8 text-center">
+          <p className="text-gray-300">© 2025 AgriForesight. All rights reserved.</p>
         </div>
       </div>
     </footer>
