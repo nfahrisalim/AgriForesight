@@ -19,12 +19,12 @@ const stats: StatItem[] = [
 
 export function StatsSection() {
   return (
-    <section className="py-20 bg-white dark:bg-[#2E7D32] transition-colors duration-300">
+    <section className="py-20 bg-white dark:bg-[#1B1B1B] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-3 gap-8">
           {stats.map((stat, index) => (
             <div key={index} className="text-center group flex">
-              <div className="bg-[#F6FBF6] dark:bg-green-900/50 rounded-2xl p-8 transform group-hover:scale-105 transition-all duration-300 shadow-md w-full h-full flex flex-col justify-center">
+              <div className="bg-[#F6FBF6] dark:bg-[#2E7D32] rounded-2xl p-8 transform group-hover:scale-105 transition-all duration-300 shadow-md w-full h-full flex flex-col justify-center">
                 <div className="text-4xl md:text-5xl font-bold text-[#4CAF50] dark:text-yellow-400 mb-2 transition-colors duration-300">
                   {stat.value}
                 </div>
