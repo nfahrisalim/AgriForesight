@@ -389,7 +389,7 @@ export function StaticDashboardSection() {
           datasets: [
             {
               label: 'Harga Historis & Saat Ini',
-              data: historicalData,
+              data: historicalData as (number | null)[], // jika bisa mengandung null
               borderColor: theme === 'dark' ? '#4ade80' : '#4CAF50',
               backgroundColor: theme === 'dark' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(76, 175, 80, 0.2)',
               tension: 0.3,
@@ -397,7 +397,7 @@ export function StaticDashboardSection() {
             },
             {
               label: `Prediksi ${predictionMonths} Bulan ke Depan`,
-              data: predictionData,
+              data: predictionData as (number | null)[], // force as expected
               borderColor: '#F9A825',
               backgroundColor: 'rgba(249, 168, 37, 0.1)',
               borderDash: [5, 5],
@@ -410,7 +410,7 @@ export function StaticDashboardSection() {
         summary: {},
         timestamp: new Date().toISOString()
       });
-      
+   
     } catch (error) {
       console.error('Error generating prediction:', error);
     } finally {
