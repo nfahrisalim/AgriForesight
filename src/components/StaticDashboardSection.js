@@ -207,8 +207,8 @@ export function StaticDashboardSection() {
             });
         }
     }, [predictionResult]);
-    const generateFuturePrediction = (currentPrice, predictionMonths) => {
-        // Generate realistic prediction based on seasonal patterns and market trends
+    const generateFuturePrediction = (currentPrice, predictionMonths, provinceId) => {
+        // Fallback prediction function for offline mode
         const basePrice = currentPrice;
         const predictions = [];
         for (let month = 1; month <= predictionMonths; month++) {
@@ -216,8 +216,9 @@ export function StaticDashboardSection() {
             const currentMonth = new Date().getMonth();
             const futureMonth = (currentMonth + month) % 12;
             const seasonalFactor = Math.sin((futureMonth / 12) * 2 * Math.PI) * 0.05;
-            // Add some market volatility
-            const volatility = (Math.random() - 0.5) * 0.03;
+            // Add deterministic "volatility" based on province and month
+            const seed = provinceId * month * 13; // Deterministic seed
+            const volatility = ((seed % 100) / 100 - 0.5) * 0.03;
             // Add inflation trend
             const inflationRate = 0.002; // 2.4% annually
             // Calculate predicted price
@@ -242,88 +243,91 @@ export function StaticDashboardSection() {
         }
         setIsLoading(true);
         try {
-            // Generate future predictions
             const predictionMonths = parseInt(predictionPeriod);
-            const futurePredictions = generateFuturePrediction(currentPrice, predictionMonths);
+            // Call the real backend API for chart data
+            const chartResponse = await fetch('https://agriforesight-756576346834.asia-southeast2.run.app/chart-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    province: selectedProvince,
+                    prediction_months: predictionMonths,
+                    current_price: currentPrice,
+                    include_historical: true,
+                    chart_type: "line"
+                })
+            });
+            if (!chartResponse.ok) {
+                throw new Error('Failed to fetch prediction data');
+            }
+            const chartData = await chartResponse.json();
+            // Create prediction result from API response
+            const apiPrediction = {
+                success: true,
+                province: selectedProvince,
+                current_price: chartData.summary.current_price,
+                predicted_price: chartData.summary.final_predicted_price,
+                change_percentage: chartData.summary.percentage_change,
+                confidence_score: chartData.summary.confidence_score,
+                prediction_period: chartData.summary.prediction_months,
+                recommendations: chartData.summary.percentage_change > 5
+                    ? "Harga diperkirakan naik signifikan. Pertimbangkan membeli lebih awal atau menahan stok untuk mendapatkan harga yang lebih baik."
+                    : chartData.summary.percentage_change < -5
+                        ? "Harga diperkirakan turun. Tunda pembelian besar atau tunggu penurunan harga untuk mendapatkan penawaran terbaik."
+                        : "Harga relatif stabil dalam periode ini. Strategi pembelian normal dapat dilanjutkan tanpa perubahan khusus.",
+                model_version: "LSTM_v2.1",
+                timestamp: chartData.timestamp
+            };
+            setPredictionResult(apiPrediction);
+            // Use the chart data from API but adapt the styling for our theme
+            const adaptedChartData = {
+                ...chartData,
+                chart_data: {
+                    ...chartData.chart_data,
+                    datasets: chartData.chart_data.datasets.map((dataset, index) => ({
+                        ...dataset,
+                        borderColor: index === 0
+                            ? (theme === 'dark' ? '#4ade80' : '#4CAF50')
+                            : '#F9A825',
+                        backgroundColor: index === 0
+                            ? (theme === 'dark' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(76, 175, 80, 0.2)')
+                            : 'rgba(249, 168, 37, 0.1)',
+                        pointBackgroundColor: index === 0
+                            ? (theme === 'dark' ? '#4ade80' : '#4CAF50')
+                            : '#F9A825',
+                        tension: 0.3,
+                        borderDash: index === 0 ? undefined : [5, 5]
+                    }))
+                }
+            };
+            setChartData(adaptedChartData);
+        }
+        catch (error) {
+            console.error('Error generating prediction:', error);
+            // Fallback to the previous mock behavior if API fails
+            const predictionMonths = parseInt(predictionPeriod);
+            const provinceId = provinceMapping[selectedProvince];
+            const futurePredictions = generateFuturePrediction(currentPrice, predictionMonths, provinceId);
             const finalPredictedPrice = futurePredictions[futurePredictions.length - 1];
             const changePercentage = ((finalPredictedPrice - currentPrice) / currentPrice) * 100;
-            // Create mock prediction result
-            const mockPrediction = {
+            const apiPrediction = {
                 success: true,
                 province: selectedProvince,
                 current_price: currentPrice,
                 predicted_price: finalPredictedPrice,
                 change_percentage: changePercentage,
-                confidence_score: 88 + Math.random() * 8, // 88-96%
+                confidence_score: 88 + (provinceId % 8),
                 prediction_period: predictionMonths,
                 recommendations: changePercentage > 5
                     ? "Harga diperkirakan naik signifikan. Pertimbangkan membeli lebih awal atau menahan stok untuk mendapatkan harga yang lebih baik."
                     : changePercentage < -5
                         ? "Harga diperkirakan turun. Tunda pembelian besar atau tunggu penurunan harga untuk mendapatkan penawaran terbaik."
                         : "Harga relatif stabil dalam periode ini. Strategi pembelian normal dapat dilanjutkan tanpa perubahan khusus.",
-                model_version: "LSTM_v2.1",
+                model_version: "LSTM_v2.1 (Offline Mode)",
                 timestamp: new Date().toISOString()
             };
-            setPredictionResult(mockPrediction);
-            // Generate chart data with historical (6 months back) + current + future predictions
-            const labels = [];
-            const historicalData = [];
-            const predictionData = [];
-            // Historical data (6 months back)
-            for (let i = 5; i >= 0; i--) {
-                const date = new Date();
-                date.setMonth(date.getMonth() - i);
-                labels.push(date.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' }));
-                // Generate historical prices with some variation
-                const historicalPrice = currentPrice + (Math.sin(i * 0.8) * 400) + (Math.random() * 300 - 150);
-                historicalData.push(historicalPrice);
-                predictionData.push(null);
-            }
-            // Current month (bridge point)
-            const currentDate = new Date();
-            labels.push(currentDate.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' }));
-            historicalData.push(currentPrice);
-            predictionData.push(currentPrice);
-            // Future predictions
-            for (let i = 1; i <= predictionMonths; i++) {
-                const futureDate = new Date();
-                futureDate.setMonth(futureDate.getMonth() + i);
-                labels.push(futureDate.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' }));
-                historicalData.push(null);
-                predictionData.push(futurePredictions[i - 1]);
-            }
-            setChartData({
-                success: true,
-                province: selectedProvince,
-                chart_data: {
-                    labels,
-                    datasets: [
-                        {
-                            label: 'Harga Historis & Saat Ini',
-                            data: historicalData,
-                            borderColor: theme === 'dark' ? '#4ade80' : '#4CAF50',
-                            backgroundColor: theme === 'dark' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(76, 175, 80, 0.2)',
-                            tension: 0.3,
-                            pointBackgroundColor: theme === 'dark' ? '#4ade80' : '#4CAF50'
-                        },
-                        {
-                            label: `Prediksi ${predictionMonths} Bulan ke Depan`,
-                            data: predictionData,
-                            borderColor: '#F9A825',
-                            backgroundColor: 'rgba(249, 168, 37, 0.1)',
-                            borderDash: [5, 5],
-                            tension: 0.3,
-                            pointBackgroundColor: '#F9A825'
-                        }
-                    ]
-                },
-                chart_options: {},
-                summary: {},
-                timestamp: new Date().toISOString()
-            });
-        }
-        catch (error) {
-            console.error('Error generating prediction:', error);
+            setPredictionResult(apiPrediction);
         }
         finally {
             setIsLoading(false);
