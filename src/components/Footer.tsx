@@ -26,19 +26,19 @@ export function Footer() {
             <h4 className="text-lg font-semibold mb-6">Sumber Data</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
+                <a href="https://badanpangan.go.id/" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <ChevronRight className="mr-2 h-3 w-3" />
                   Badan Pangan Nasional
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
+                <a href="https://www.bps.go.id/id" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <ChevronRight className="mr-2 h-3 w-3" />
                   BPS Indonesia
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
+                <a href="https://psp.pertanian.go.id/" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <ChevronRight className="mr-2 h-3 w-3" />
                   Kementerian Pertanian
                 </a>
@@ -50,19 +50,19 @@ export function Footer() {
             <h4 className="text-lg font-semibold mb-6">Bantuan</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
+                <a href="https://agriforesight-756576346834.asia-southeast2.run.app/docs" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <ChevronRight className="mr-2 h-3 w-3" />
                   Dokumentasi API
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
+                <a href="https://github.com/nfahrisalim/AgriForesight_Backend/blob/main/README.md" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <ChevronRight className="mr-2 h-3 w-3" />
                   FAQ
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
+                <a href="mailto:nfahrisalim@gmail.com" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <ChevronRight className="mr-2 h-3 w-3" />
                   Kontak Support
                 </a>
