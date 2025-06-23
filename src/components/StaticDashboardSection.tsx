@@ -101,6 +101,8 @@ export function StaticDashboardSection() {
   const [predictionResult, setPredictionResult] = useState<PredictionResult | null>(null);
   const [chartData, setChartData] = useState<ChartDataResponse | null>(null);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [apiStatus, setApiStatus] = useState<'success' | 'failed' | null>(null);
+  const [manualPrice, setManualPrice] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [theme, setTheme] = useState(() => document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 
@@ -125,45 +127,98 @@ export function StaticDashboardSection() {
   const fetchCurrentPrice = async (province: string) => {
     try {
       const provinceId = provinceMapping[province];
-      if (!provinceId) return null;
+      if (!provinceId) {
+        console.error('Province ID not found for:', province);
+        return null;
+      }
 
       const today = new Date();
       const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
 
       const url = `https://api-panelhargav2.badanpangan.go.id/api/front/harga-peta-provinsi?level_harga_id=3&komoditas_id=27&period_date=${formattedDate}%20-%20${formattedDate}&multi_status_map[0]=&multi_province_id[0]=${provinceId}`;
 
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch current price');
+      console.log('Fetching price from:', url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        console.error('API response not OK:', response.status, response.statusText);
+        throw new Error(`HTTP ${response.status}: Failed to fetch current price`);
+      }
 
       const data = await response.json();
+      console.log('API Response:', data);
 
       // Extract rata_rata_geometrik from the response
-      if (data.data && data.data.length > 0) {
+      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
         const priceData = data.data.find((item: any) => item.province_id === provinceId);
         if (priceData && priceData.rata_rata_geometrik) {
-          return parseFloat(priceData.rata_rata_geometrik);
+          const price = parseFloat(priceData.rata_rata_geometrik);
+          if (!isNaN(price) && price > 0) {
+            console.log('Successfully fetched price:', price);
+            return price;
+          }
         }
       }
 
-      // Fallback to mock data if API doesn't return data
-      return 12000 + (provinceId * 200) + (Math.random() * 1000);
+      console.error('No valid price data found in response');
+      throw new Error('No price data available for this province');
     } catch (error) {
       console.error('Error fetching current price:', error);
-      // Fallback to mock data
-      const provinceId = provinceMapping[province] || 1;
-      return 12000 + (provinceId * 200) + (Math.random() * 1000);
+      return null;
     }
   };
 
   useEffect(() => {
     if (selectedProvince) {
-      fetchCurrentPrice(selectedProvince).then(price => {
-        setCurrentPrice(price);
-      });
+      setApiStatus(null); // Reset status while loading
+      setCurrentPrice(null);
       setPredictionResult(null);
       setChartData(null);
+      setManualPrice("");
+      
+      fetchCurrentPrice(selectedProvince).then(price => {
+        if (price !== null && price > 0) {
+          setCurrentPrice(price);
+          setApiStatus('success');
+          console.log('API fetch successful for', selectedProvince, ':', price);
+        } else {
+          setCurrentPrice(null);
+          setApiStatus('failed');
+          console.log('API fetch failed for', selectedProvince);
+        }
+      }).catch(error => {
+        console.error('fetchCurrentPrice error:', error);
+        setCurrentPrice(null);
+        setApiStatus('failed');
+      });
+    } else {
+      // Reset when no province selected
+      setCurrentPrice(null);
+      setApiStatus(null);
+      setPredictionResult(null);
+      setChartData(null);
+      setManualPrice("");
     }
   }, [selectedProvince]);
+
+  // Get the effective price (API price or manual price)
+  const getEffectivePrice = (): number | null => {
+    if (apiStatus === 'success' && currentPrice !== null) {
+      return currentPrice;
+    }
+    if (apiStatus === 'failed' && manualPrice) {
+      const parsed = parseFloat(manualPrice);
+      return !isNaN(parsed) && parsed > 0 ? parsed : null;
+    }
+    return null;
+  };
 
   // GSAP Animations
   useEffect(() => {
@@ -307,7 +362,8 @@ export function StaticDashboardSection() {
   };
 
   const handleGeneratePrediction = async () => {
-    if (!selectedProvince || !predictionPeriod || !currentPrice) return;
+    const effectivePrice = getEffectivePrice();
+    if (!selectedProvince || !predictionPeriod || !effectivePrice) return;
 
     // Button click animation
     if (buttonRef.current) {
@@ -334,7 +390,7 @@ export function StaticDashboardSection() {
         body: JSON.stringify({
           province: selectedProvince,
           prediction_months: predictionMonths,
-          current_price: currentPrice,
+          current_price: effectivePrice,
           include_historical: true,
           chart_type: "line"
         })
@@ -395,14 +451,14 @@ export function StaticDashboardSection() {
       // Fallback to the previous mock behavior if API fails
       const predictionMonths = parseInt(predictionPeriod);
       const provinceId = provinceMapping[selectedProvince];
-      const futurePredictions = generateFuturePrediction(currentPrice, predictionMonths, provinceId);
+      const futurePredictions = generateFuturePrediction(effectivePrice, predictionMonths, provinceId);
       const finalPredictedPrice = futurePredictions[futurePredictions.length - 1];
-      const changePercentage = ((finalPredictedPrice - currentPrice) / currentPrice) * 100;
+      const changePercentage = ((finalPredictedPrice - effectivePrice) / effectivePrice) * 100;
 
       const apiPrediction: PredictionResult = {
         success: true,
         province: selectedProvince,
-        current_price: currentPrice,
+        current_price: effectivePrice,
         predicted_price: finalPredictedPrice,
         change_percentage: changePercentage,
         confidence_score: 88 + (provinceId % 8),
@@ -493,7 +549,8 @@ export function StaticDashboardSection() {
               </div>
             </div>
 
-            {currentPrice && (
+            {/* API Status and Price Display */}
+            {apiStatus === 'success' && currentPrice && (
               <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
                 <p className="text-sm text-green-700 dark:text-green-300">
                   <strong>Harga Saat Ini ({selectedProvince}):</strong> Rp {currentPrice.toLocaleString()}
@@ -502,11 +559,78 @@ export function StaticDashboardSection() {
               </div>
             )}
 
+            {apiStatus === 'failed' && (
+              <div className="mt-6 space-y-4">
+                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800">
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                    <strong>⚠️ API Badan Pangan tidak tersedia untuk provinsi {selectedProvince}.</strong> Silakan masukkan harga beras saat ini secara manual untuk melanjutkan prediksi.
+                  </p>
+                </div>
+                
+                {/* Tutorial Card */}
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <h4 className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-2">
+                    📋 Cara Input Harga yang Benar:
+                  </h4>
+                  <div className="space-y-2 text-xs text-blue-600 dark:text-blue-400">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-green-500">✓</span>
+                      <span><strong>Benar:</strong> 12000 (hanya angka)</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-red-500">✗</span>
+                      <span><strong>Salah:</strong> Rp 12.000, 12,000, atau 12.000</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-green-500">✓</span>
+                      <span><strong>Contoh:</strong> Harga Rp 15.500/kg → input: 15500</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-zinc-300 mb-2 uppercase tracking-wide">
+                    Harga Manual (angka saja, tanpa Rp/titik/koma)
+                  </label>
+                  <input
+                    type="number"
+                    value={manualPrice}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Remove any non-numeric characters and validate
+                      const cleanValue = value.replace(/[^0-9]/g, '');
+                      setManualPrice(cleanValue);
+                    }}
+                    placeholder="Contoh: 12000"
+                    min="1000"
+                    max="100000"
+                    step="100"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-zinc-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-zinc-700 dark:text-zinc-200 transition-all duration-200"
+                  />
+                  <div className="mt-2 space-y-1">
+                    <p className="text-xs text-gray-500 dark:text-zinc-400">
+                      Masukkan harga beras saat ini dalam Rupiah per kilogram (hanya angka)
+                    </p>
+                    {manualPrice && (
+                      <p className="text-xs text-green-600 dark:text-green-400">
+                        Preview: Rp {parseInt(manualPrice || '0').toLocaleString('id-ID')}/kg
+                      </p>
+                    )}
+                    {manualPrice && (parseInt(manualPrice) < 1000 || parseInt(manualPrice) > 100000) && (
+                      <p className="text-xs text-red-500 dark:text-red-400">
+                        ⚠️ Harga tidak wajar. Harga beras umumnya antara Rp 1.000 - Rp 100.000/kg
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mt-8 text-center">
               <Button 
                 ref={buttonRef}
                 onClick={handleGeneratePrediction} 
-                disabled={!selectedProvince || !currentPrice || isLoading} 
+                disabled={!selectedProvince || !getEffectivePrice() || isLoading} 
                 className="relative group bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-12 py-5 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></div>
